@@ -1,0 +1,5 @@
+export const channels={smile:'嘴角上扬',eye:'眼周收紧',cheek:'脸颊抬起',jaw:'张嘴幅度'};
+export function extract(categories){const c=Object.fromEntries(categories.map(x=>[x.categoryName,x.score]));const pair=n=>((c[n+'Left']||0)+(c[n+'Right']||0))/2;return {smile:pair('mouthSmile'),eye:pair('eyeSquint'),cheek:pair('cheekSquint'),jaw:c.jawOpen||0,blink:pair('eyeBlink')};}
+export function aggregate(samples){const result={};for(const k of [...Object.keys(channels),'blink']){let values=samples.filter(s=>!['eye','cheek'].includes(k)||s.blink<.5).map(s=>s[k]).sort((a,b)=>a-b);if(values.length<5)return null;let trim=Math.floor(values.length*.1),v=values.slice(trim,values.length-trim);result[k]=v.reduce((a,b)=>a+b,0)/v.length;}return result;}
+export function describe(value,base=0){let d=Math.max(0,value-base);return d<.08?'不明显':d<.25?'轻微':'明显';}
+export function summarize(v,base){let d=k=>Math.max(0,v[k]-(base?.[k]||0));if(d('jaw')>.3&&d('smile')<.12)return '张嘴动作明显，嘴角上扬不明显；张嘴不计为笑容。';if(d('smile')<.08)return '这几秒没有明显的嘴角上扬，不能据此判断心情。';if(d('eye')>=.08||d('cheek')>=.08)return '观察到嘴角上扬，并伴有眼周或脸颊动作；这不等于判断笑容真假。';return '观察到嘴角上扬，眼周和脸颊变化较少；不据此判断是否开心。';}
