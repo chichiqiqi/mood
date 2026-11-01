@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "onnxruntime-web": "1.31.1",
+    "@mediapipe/tasks-vision": "0.10.21"
+  },
+  "private": true,
+  "scripts": {
+    "build": "node build.mjs"
+  }
+}

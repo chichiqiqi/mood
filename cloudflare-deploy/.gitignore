@@ -1,0 +1,4 @@
+node_modules/
+public/vendor/
+public/models/
+public/verify.html
