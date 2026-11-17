@@ -1,0 +1,2 @@
+// Classic worker allows MediaPipe's WASM loader to use importScripts.
+self.onmessage=async({data:{id,image}})=>{try{const {analyze}=await import('./inference.mjs');const canvas=new OffscreenCanvas(image.width,image.height);canvas.getContext('2d').drawImage(image,0,0);image.close();self.postMessage({id,result:await analyze(canvas)})}catch(error){image?.close();self.postMessage({id,error:error.message||String(error)})}};
